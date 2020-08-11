@@ -4,9 +4,9 @@
  Tomcat / JSP & Servlet / MySQL
  
  Settings in Utilities.java:
-  dbAddress
-  dbUsername
-	dbPassword
 	
+	dbAddress
+  	dbUsername
+	dbPassword
 	maxNumberOfEvaluators
 	maxNumberOfEvaluationsPerUser
