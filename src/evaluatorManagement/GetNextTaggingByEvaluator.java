@@ -1,0 +1,96 @@
+package evaluatorManagement;
+
+import java.beans.PropertyVetoException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import utilities.Utilities;
+import bean.Entity;
+import entityManagement.DbEntity;
+import evaluatorManagement.DbEvaluator;
+
+@WebServlet("/getNextTaggingByEvaluator")
+public class GetNextTaggingByEvaluator extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+    	String gotoPage = "./pages/showEntityToTag.jsp";
+		String errorMessage = "";
+		HttpSession session = request.getSession();
+    	
+		try {
+			Integer evaluatorId = Integer.valueOf(request.getParameter("evaluatorId"));
+			
+			ArrayList<Entity> entities = (ArrayList<Entity>) DbEntity.getEntities();
+			ArrayList<String> existingTags =  new ArrayList<String>();
+			
+			for(String tag: Utilities.defaultTags){				
+					existingTags.add(tag);
+			}
+			
+			session.setAttribute("existingTags", existingTags);
+			session.setAttribute("evaluatorId", evaluatorId);
+			
+			Collections.shuffle(entities);
+			//Collections.sort(entities);
+			
+			boolean found = false;
+			
+			//find a suitable type
+//			ArrayList<String> suitableTypes = new ArrayList<String>();
+//			for(String type: Utilities.limits.keySet()){
+//				if(DbEntity.getNumberOfEvaluatedEntitiesByType(type) < Utilities.limits.get(type)){
+//					if(DbEntity.getNumberOfEvaluatedEntitiesByTypeAndEvaluator(type, evaluatorId) < Utilities.limits.get(type)){
+//						suitableTypes.add(type);
+//					}
+//				}
+//			}
+			
+			for(Entity entity: entities){
+				//if(suitableTypes.contains(entity.getType())){
+					if(/*!entity.hasAgreement() &&*/ !DbEvaluator.hasEvaluatedEntity(evaluatorId, entity.getId()) && DbEntity.getTagsBeanByEntity(entity).size() < Utilities.maxNumberOfEvaluators /*&& DbEntity.getNumberOfEvaluatedEntitiesByEvaluator(evaluatorId) < Utilities.maxNumberOfEvaluationsPerUser*/){
+						session.setAttribute("toEvaluate", entity);
+						found = true;
+						break;
+					}
+				//}
+			}
+			
+			if(!found || DbEntity.getNumberOfEvaluatedEntitiesByEvaluator(evaluatorId) >= Utilities.maxNumberOfEvaluationsPerUser)
+				gotoPage = "./pages/completed.jsp";
+			
+		} catch (IOException ioException) {
+			errorMessage = Utilities.defaultErrorMessage
+					+ ioException.getMessage();
+			gotoPage = "./error.jsp";
+			ioException.printStackTrace();
+		} catch (PropertyVetoException propertyVetoException) {
+			errorMessage = Utilities.defaultErrorMessage
+					+ propertyVetoException.getMessage();
+			gotoPage = "./error.jsp";
+			propertyVetoException.printStackTrace();
+		} 
+
+		session.setAttribute("errorMessage", errorMessage);
+		
+		try {
+			response.sendRedirect(gotoPage);
+		} catch (IOException ioException) {
+			errorMessage = Utilities.defaultErrorMessage
+					+ ioException.getMessage();
+			gotoPage = "./error.jsp";
+			ioException.printStackTrace();
+		}
+	}
+    
+
+}
