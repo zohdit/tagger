@@ -80,7 +80,7 @@
 							</thead>
 							<tbody>
 								<tr class="odd gradeX">
-									<td><img src="img/<%=toEvaluate.getTextToShow()%>"
+									<td><img src="../img/<%=toEvaluate.getTextToShow()%>"
 										width="200" height="200" /></td>
 									<td style="text-align: center">
 
