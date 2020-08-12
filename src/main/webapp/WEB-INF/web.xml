@@ -8,26 +8,6 @@
 		<session-timeout>0</session-timeout>
 	</session-config>
 
-
-	<!-- Look up this class inside the context.xml file under META-INF -->
-	<!-- <resource-ref>
-		<res-ref-name>jdbc/tagger</res-ref-name>
-		<res-type>javax.sql.DataSource</res-type>
-	</resource-ref> -->
-
-	<!-- Servlets -->
-	<!-- <servlet>
-		<servlet-name>Home</servlet-name>
-		<jsp-file>/jsp/home.jsp</jsp-file>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Home</servlet-name>
-		<url-pattern>/</url-pattern>
-	</servlet-mapping> -->
-
-	<!-- Error pages -->
-	<error-page>
-		<location>/erro.jsp</location>
-	</error-page>
+	<!-- We might not even need web.xml since we are using annotations on classes -->
 
 </web-app>

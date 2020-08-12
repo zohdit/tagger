@@ -243,11 +243,11 @@ public class DbEvaluator {
             connection = DbConnection.getInstance().getConnection();
             statement = connection.createStatement();
 
-            String query = "SELECT DISTINCT tag FROM " + TABLE_TAGS;
+            String query = "SELECT DISTINCT vulnerability_tag FROM " + TABLE_TAGS;
 
             resultSet = statement.executeQuery(query);
             while (resultSet.next())
-                tags.add(resultSet.getString("tag"));
+                tags.add(resultSet.getString("vulnerability_tag"));
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();

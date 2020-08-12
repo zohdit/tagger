@@ -33,40 +33,45 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
             Integer evaluatorId = Integer.valueOf(request.getParameter("evaluatorId"));
 
             ArrayList<Entity> entities = (ArrayList<Entity>) DbEntity.getEntities();
-            ArrayList<String> existingTags = (ArrayList<String>) DbEvaluator.getExistingTags();
+            ArrayList<String> existingTags = new ArrayList<String>();
 
             for (String tag : Utilities.defaultTags) {
-                if (!existingTags.contains(tag))
-                    existingTags.add(tag);
+                existingTags.add(tag);
             }
 
             session.setAttribute("existingTags", existingTags);
             session.setAttribute("evaluatorId", evaluatorId);
 
             Collections.shuffle(entities);
-            Collections.sort(entities);
+            // Collections.sort(entities);
 
             boolean found = false;
 
             // find a suitable type
-            ArrayList<String> suitableTypes = new ArrayList<String>();
-            for (String type : Utilities.limits.keySet()) {
-                if (DbEntity.getNumberOfEvaluatedEntitiesByType(type) < Utilities.limits.get(type)) {
-                    if (DbEntity.getNumberOfEvaluatedEntitiesByTypeAndEvaluator(type, evaluatorId) < Utilities.limits
-                            .get(type)) {
-                        suitableTypes.add(type);
-                    }
-                }
-            }
+//			ArrayList<String> suitableTypes = new ArrayList<String>();
+//			for(String type: Utilities.limits.keySet()){
+//				if(DbEntity.getNumberOfEvaluatedEntitiesByType(type) < Utilities.limits.get(type)){
+//					if(DbEntity.getNumberOfEvaluatedEntitiesByTypeAndEvaluator(type, evaluatorId) < Utilities.limits.get(type)){
+//						suitableTypes.add(type);
+//					}
+//				}
+//			}
 
             for (Entity entity : entities) {
-                if (suitableTypes.contains(entity.getType())) {
-                    if (!entity.hasAgreement() && !DbEvaluator.hasEvaluatedEntity(evaluatorId, entity.getId())) {
-                        session.setAttribute("toEvaluate", entity);
-                        found = true;
-                        break;
-                    }
+                // if(suitableTypes.contains(entity.getType())){
+                if (/* !entity.hasAgreement() && */ !DbEvaluator.hasEvaluatedEntity(evaluatorId, entity.getId())
+                        && DbEntity.getTagsBeanByEntity(entity)
+                                .size() < Utilities.maxNumberOfEvaluators /*
+                                                                           * && DbEntity.
+                                                                           * getNumberOfEvaluatedEntitiesByEvaluator(
+                                                                           * evaluatorId) <
+                                                                           * Utilities.maxNumberOfEvaluationsPerUser
+                                                                           */) {
+                    session.setAttribute("toEvaluate", entity);
+                    found = true;
+                    break;
                 }
+                // }
             }
 
             if (!found || DbEntity
