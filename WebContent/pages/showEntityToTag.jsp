@@ -75,7 +75,7 @@
                                     </thead>
                                     <tbody>
                                         <tr class="odd gradeX">
-                                            <td><%=toEvaluate.getTextToShow()%></td>
+                                            <td><img src="img/<%=toEvaluate.getTextToShow()%>" width="200" height="200" /></td>
                                             <td style="text-align:center">
                                             
                                             	<form class="form-horizontal" role="form"  action="../insertTagByEvaluator" method="post">

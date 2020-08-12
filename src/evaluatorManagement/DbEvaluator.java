@@ -425,7 +425,7 @@ public class DbEvaluator {
 			
 			resultSet = statement.executeQuery(query);
 			while(resultSet.next())
-				retrievedTags.add(resultSet.getString("vulnerability_tag"));
+				retrievedTags.add(resultSet.getString("tag"));
 			
 		} catch (SQLException sqlException) {
 			sqlException.printStackTrace();

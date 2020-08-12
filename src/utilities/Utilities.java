@@ -24,34 +24,31 @@ public class Utilities {
 	//CONFIGURATION PARAMETERS
 	//db
 	public static String dbDriver = "com.mysql.jdbc.Driver";
-	public static String dbAddress = "jdbc:mysql://localhost:3306/dl-mutation-tagging";
-	public static String dbUsername = "root";
-	public static String dbPassword = "";
 	
-	public static int maxNumberOfEvaluators = 2;
-	public static int maxNumberOfEvaluationsPerUser = 120;
+//	public static String dbAddress = "jdbc:mysql://localhost:3306/dl_mutation?useSSL=false";
+//	public static String dbUsername = "udl_mutation904";
+//	public static String dbPassword = "pc21e6e2";
+	
+	public static String dbAddress = "jdbc:mysql://localhost:3306/dl-mutation-tagging?useSSL=false";
+	public static String dbUsername = "root";
+	public static String dbPassword = "123456";
+	
+	public static int maxNumberOfEvaluators = 1;
+	public static int maxNumberOfEvaluationsPerUser = 200;
 	
 	//tagging limits
 	public static final Map<String, Integer> limits = new HashMap<String, Integer>();
 	static
 	{
-		limits.put("commit-tensorflow", 30);
-		limits.put("commit-torch", 30);
-		limits.put("commit-keras", 30);
-		limits.put("issue-tensorflow", 30);
-		limits.put("issue-torch", 30);
-		limits.put("issue-keras", 30);
-		limits.put("so-tensorflow", 30);
-		limits.put("so-torch", 30);
-		limits.put("so-keras", 30);
+		//limits.put("png", 6);
 	}
 	
 	public static final ArrayList<String> defaultTags = new ArrayList<String>();
 	static
 	{
-		defaultTags.add("false positive");
-		defaultTags.add("unclear");
-		defaultTags.add("generic");
+		defaultTags.add("boldness[],smoothness[],continuity[],orientation[]");
+//		defaultTags.add("unclear");
+//		defaultTags.add("generic");
 	}
 	
 	public static double round(double value, int places) {

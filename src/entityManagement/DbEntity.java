@@ -503,16 +503,18 @@ public class DbEntity {
 			connection = DbConnection.getInstance().getConnection();
 			statement = connection.createStatement();
 
-			String query = "SELECT * FROM " + TABLE_TAGS +
-					" WHERE " + TABLE_TAGS + ".evaluator_id=" + evaluatorId;
+			String query = "SELECT * FROM " + TABLE_ENTITY +  "," + TABLE_TAGS +
+					" WHERE " + TABLE_TAGS + ".evaluator_id=" + evaluatorId + 
+					" AND " + TABLE_ENTITY + ".id=" + TABLE_TAGS + ".entity_id";
+			
 			
 			resultSet = statement.executeQuery(query);
 			if(resultSet.next())
 				retrievedEntities = loadEntitiesFromRs(resultSet);
 			
 			for(Entity entity: retrievedEntities){
-				String assignedTag = DbEntity.getTagByEntityAndEvaluator(entity.getId(), evaluatorId);
-				if(assignedTag != null && !assignedTag.toLowerCase().equals("false positive"))
+				//String assignedTag = DbEntity.getTagByEntityAndEvaluator(entity.getId(), evaluatorId);
+				//if(assignedTag != null && !assignedTag.toLowerCase().equals("false positive"))
 					evaluated++;
 			}
 			
