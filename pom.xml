@@ -57,7 +57,11 @@
 	</dependencies>
 
 	<build>
-		<sourceDirectory>src</sourceDirectory>
+		<filters>
+			<!-- This option enables to read properties from this file and automagically 
+				put their values in other files, such as, context.xml -->
+			<filter>${config.properties}</filter>
+		</filters>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -67,12 +71,40 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<!-- Prepare the WAR file -->
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.6</version>
 				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+						</manifest>
+					</archive>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<webResources>
+						<resource>
+							<directory>src/main/resources</directory>
+							<includes>
+								<include>**/*.js</include>
+								<include>**/*.css</include>
+								<include>fonts/*.*</include>
+								<include>**/*.html</include>
+								<include>**/*.jpg</include>
+								<include>**/*.png</include>
+							</includes>
+						</resource>
+						<!-- Enable reading props from config.file and setting all the files 
+							in META-INF -->
+						<resource>
+							<directory>src/main/webapp/META-INF</directory>
+							<filtering>true</filtering>
+							<targetPath>META-INF</targetPath>
+						</resource>
+					</webResources>
+					<packagingExcludes>**/empty.tmp</packagingExcludes>
 				</configuration>
 			</plugin>
 			<!-- Reads the configuration variables directly from -->
@@ -90,6 +122,67 @@
 							<files>
 								<file>${config.properties}</file>
 							</files>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Fails if the ${config.properties} file does not exists -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<executions>
+					<execution>
+						<id>enforce-deploy-properties-exist</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireProperty>
+									<property>tomcat.username</property>
+									<message>Tomcat username is missing</message>
+								</requireProperty>
+								<requireProperty>
+									<property>tomcat.password</property>
+									<message>Tomcat password is missing</message>
+								</requireProperty>
+								<requireProperty>
+									<property>tomcat.url</property>
+									<message>Tomcat manager api url is missing</message>
+								</requireProperty>
+								<requireProperty>
+									<property>tomcat.path</property>
+									<message>Tomcat deploy path is missing</message>
+								</requireProperty>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Shows to console if properties have been defined -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<echo>Displaying Tomcat properties value</echo>
+								<echo>[tomcat.path] ${tomcat.path}</echo>
+								<echo>[tomcat.url] ${tomcat.url}</echo>
+								<echo>Displaying Tagger properties value</echo>
+								<echo>[dbAddress] ${dbAddress}</echo>
+								<echo>[dbUsername] ${dbUsername}</echo>
+								<echo>[maxNumberOfEvaluators] ${maxNumberOfEvaluators}</echo>
+								<echo>[maxNumberOfEvaluationsPerUser] ${maxNumberOfEvaluationsPerUser}</echo>
+							</tasks>
 						</configuration>
 					</execution>
 				</executions>

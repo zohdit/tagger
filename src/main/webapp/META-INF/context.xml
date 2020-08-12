@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+	<!-- The values in this file are filled automatically from the values inside 
+		config.cfg file -->
+
+	<!-- <Resource name="jdbc/tagger" type="javax.sql.DataSource" maxTotal="200" 
+		maxWaitMillis="1000" maxIdle="0" driverClassName="com.mysql.cj.jdbc.Driver" 
+		url="${dbAddress}" username="${dbUsername}" password="${dbPassword}" /> -->
+
+	<!-- For the moment we keep duplicate data here, but we will remove them 
+		soon -->
+	<Environment name="dbAddress" type="java.lang.String"
+		value="${dbAddress}" />
+
+	<Environment name="dbUsername" type="java.lang.String"
+		value="${dbUsername}" />
+
+	<Environment name="dbPassword" type="java.lang.String"
+		value="${dbPassword}" />
+
+	<Environment name="dbDriver" type="java.lang.String"
+		value="${dbDriver}" />
+
+	<Environment name="maxNumberOfEvaluators"
+		type="java.lang.String" value="${maxNumberOfEvaluators}" />
+
+	<Environment name="maxNumberOfEvaluationsPerUser"
+		type="java.lang.String" value="${maxNumberOfEvaluationsPerUser}" />
+
+
+</Context>
