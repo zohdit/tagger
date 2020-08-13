@@ -4,6 +4,9 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -24,6 +27,17 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String _dataset = request.getParameter("dataset");
+
+        if (Constants.BEAMNG.equalsIgnoreCase(_dataset)) {
+            _dataset = Constants.BEAMNG;
+        } else {
+            _dataset = Constants.MNIST;
+        }
+
+        // Make the compiler happy...
+        final String dataset = _dataset;
+
         // TODO Move to constants
         String gotoPage = Constants.SHOW_ENTITY_TO_TAG_JSP;
         String errorMessage = "";
@@ -32,9 +46,28 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
         try {
             Integer evaluatorId = Integer.valueOf(request.getParameter("evaluatorId"));
 
-            ArrayList<Entity> entities = (ArrayList<Entity>) DbEntity.getEntities();
-            ArrayList<String> existingTags = new ArrayList<String>();
+            List<Entity> entities = (List<Entity>) DbEntity.getEntities();
 
+            // Use a simple heuristic to filter out the entities returned by the DB
+            // We can push this inside the DbEntity class if necessary
+            entities = entities.stream().filter(new Predicate<Entity>() {
+
+                @Override
+                public boolean test(Entity t) {
+                    switch (dataset) {
+                    case Constants.BEAMNG:
+                        return "json".equalsIgnoreCase(t.getType());
+                    case Constants.MNIST:
+                    default:
+                        return "png".equalsIgnoreCase(t.getType());
+                    }
+                }
+            }).collect(Collectors.toList());
+
+            List<String> existingTags = new ArrayList<String>();
+
+            // TODO This must be updated with the default tags for this dataset...
+            //
             for (String tag : Utilities.defaultTags) {
                 existingTags.add(tag);
             }

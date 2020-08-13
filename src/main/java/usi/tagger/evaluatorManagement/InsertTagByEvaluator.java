@@ -2,6 +2,8 @@ package usi.tagger.evaluatorManagement;
 
 import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,11 +28,25 @@ public class InsertTagByEvaluator extends HttpServlet {
         HttpSession session = request.getSession();
 
         try {
+            /*
+             * since the number of elements to tag is variable (e.g., for sectors) we need
+             * to process this dynamically
+             */
 
-            String tag = request.getParameter("tag");
+            StringBuilder tagBuilder = new StringBuilder();
+            for (Entry<String, String[]> parameter : request.getParameterMap().entrySet()) {
+                String parameterName = parameter.getKey();
+                String[] parameterValues = parameter.getValue();
+                if (parameterName.startsWith("tag")) {
+                    tagBuilder.append(parameterName).append("=").append(Arrays.toString(parameterValues)).append(";");
+                }
+
+            }
+//            String tag = request.getParameter("tag");
             int evaluatorId = Integer.valueOf(request.getParameter("evaluatorId"));
             int entityId = Integer.valueOf(request.getParameter("entityId"));
             String isInterestingValue = request.getParameter("isInteresting");
+
             boolean isInteresting = false;
             if (isInterestingValue != null) {
                 isInteresting = Utilities.intToBoolean(Integer.valueOf(isInterestingValue));
@@ -38,7 +54,7 @@ public class InsertTagByEvaluator extends HttpServlet {
 
             gotoPage = Constants.GET_NEXT_TAGGING_BY_EVALUATOR + "?evaluatorId=" + evaluatorId;
 
-            DbEvaluator.insertTag(tag, evaluatorId, entityId, isInteresting);
+            DbEvaluator.insertTag(tagBuilder.toString(), evaluatorId, entityId, isInteresting);
 
         } catch (IOException ioException) {
             errorMessage = Utilities.defaultErrorMessage + ioException.getMessage();

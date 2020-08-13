@@ -94,6 +94,7 @@
 								<include>**/*.html</include>
 								<include>**/*.jpg</include>
 								<include>**/*.png</include>
+								<include>**/*.json</include>
 							</includes>
 						</resource>
 						<!-- Enable reading props from config.file and setting all the files 

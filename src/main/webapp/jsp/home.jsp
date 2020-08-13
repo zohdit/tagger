@@ -96,7 +96,12 @@
 									<td><%=evaluator.getEvaluatedEntities()%></td>
 									<td style="text-align: center"><a
 										class="fa fa-caret-square-o-right detailsIcon"
-										href="../getNextTaggingByEvaluator?evaluatorId=<%=evaluator.getId()%>"></a></td>
+										href="../getNextTaggingByEvaluator?dataset=mnist&evaluatorId=<%=evaluator.getId()%>"></a>
+									<td style="text-align: center"><a
+										class="fa fa-car detailsIcon"
+										href="../getNextTaggingByEvaluator?dataset=beamng&evaluatorId=<%=evaluator.getId()%>"></a>
+										
+										</td>
 								</tr>
 								<%
 								    }

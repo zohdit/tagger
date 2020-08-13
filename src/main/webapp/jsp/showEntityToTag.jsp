@@ -6,9 +6,9 @@
 
 <%
     Entity toEvaluate = (Entity) session.getAttribute("toEvaluate");
-    Integer evaluatorId = (Integer) session.getAttribute("evaluatorId");
-    ArrayList<String> existingTags = (ArrayList<String>) session.getAttribute("existingTags");
-    Collections.sort(existingTags);
+			Integer evaluatorId = (Integer) session.getAttribute("evaluatorId");
+			ArrayList<String> existingTags = (ArrayList<String>) session.getAttribute("existingTags");
+			Collections.sort(existingTags);
 %>
 
 <head>
@@ -60,7 +60,6 @@
 			<!-- /.navbar-header -->
 		</nav>
 
-
 		<div class="col-md-10 col-md-offset-1" style="margin-top: 10px">
 
 			<div class="panel" style="margin-top: 20px">
@@ -72,9 +71,96 @@
 					<div class="dataTable_wrapper">
 						<table class="table table-striped table-bordered table-hover"
 							id="dataTable">
+
+							<%-- THIS IS BRUTAL BUT FAST TO IMPLEMENTE --%>
+							<%
+							    if (toEvaluate.getType().equalsIgnoreCase("json")) {
+							%>
+
+							<script src="../js/d3.v5.min.js" type="text/javascript"></script>
+							<script src="../js/mpld3.v0.5.1.js" type="text/javascript"></script>
+							<script src="../js/register.mpld3.plugins.js" type="text/javascript"></script>
+							
 							<thead>
 								<tr>
-									<th><%=toEvaluate.getType()%></th>
+									<th id="road-label">Road</th>
+									<th width="500">Tag</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="odd gradeX">
+									<td>
+										<div id="fig<%=toEvaluate.getId()%>"></div> 
+									</td>
+									<td style="text-align: center">
+										<form class="form-horizontal" role="form"
+											action="../insertTagByEvaluator" method="post">
+											
+											
+											<!-- This Dynamically create the drop down thingy  -->
+											<div id="tagger-form-group" class="form-group">
+												<input type="text" size="50" list="tags" name="tag" id="tag"/>
+												<datalist id="tags" name="tags">
+													<%
+													    for (String tag : existingTags) {
+													%>
+													<option value="<%=tag%>"><%=tag%></option>
+													<%
+													    }
+													%>
+												</datalist>
+											</div>
+
+											<input type="hidden" name="evaluatorId" id="evaluatorId"
+												value="<%=evaluatorId%>"> <input type="hidden"
+												name="entityId" id="entityId"
+												value="<%=toEvaluate.getId()%>">
+
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" value="1"
+													id="isInteresting" name="isInteresting"> <label
+													class="form-check-label" for="isInteresting"> Mark
+													for qualitative analysis </label>
+											</div>
+
+											<div class="row" style="margin-top: 20px">
+												<button class="btn btn-sm btn-primary" type="submit">Add tag</button>
+											</div>
+										</form>
+									</td>
+								</tr>
+						
+								<%-- This is ugly, probably we should update the form after the page loaded ? --%>		
+								<script type="text/javascript">
+										register_custom_plugins(mpld3)
+										var jsonFigure = <%=Utilities.getContentOfFile(this.getServletContext().getRealPath(toEvaluate.getType() + "/" + toEvaluate.getTextToShow()))%>;
+										mpld3.draw_figure("fig<%=toEvaluate.getId()%>", jsonFigure);
+										update_form()
+								</script>
+								
+								
+								<tr>
+									<td colspan="3"><b>EXISTING TAGS</b><br> <%
+     for (String tag : existingTags) {
+             if (existingTags.indexOf(tag) % 2 == 0) {
+ %> <span style="color: #ff0000"><%=tag%></span> <%
+     } else {
+ %> <span style="color: #0000ff"><%=tag%></span> <%
+     }
+         }
+ %></td>
+								</tr>
+
+							</tbody>
+
+							<%-- BEAMNG --%>
+							<%
+							    } else if (toEvaluate.getType().equalsIgnoreCase("png")) {
+							%>
+							<%-- MNIST --%>
+							<thead>
+								<tr>
+									<th>Image</th>
 									<th width="500">Tag</th>
 								</tr>
 							</thead>
@@ -122,17 +208,23 @@
 								<tr>
 									<td colspan="3"><b>EXISTING TAGS</b><br> <%
      for (String tag : existingTags) {
-         if (existingTags.indexOf(tag) % 2 == 0) {
+             if (existingTags.indexOf(tag) % 2 == 0) {
  %> <span style="color: #ff0000"><%=tag%></span> <%
      } else {
  %> <span style="color: #0000ff"><%=tag%></span> <%
      }
- %> <%
-     }
+         }
  %></td>
 								</tr>
 
 							</tbody>
+
+							<%
+							    }
+							%>
+
+
+
 						</table>
 					</div>
 					<!-- /.table-responsive -->

@@ -9,5 +9,8 @@ public class Constants {
 
     // TODO This one can be improved somehow..
     public static final String GET_NEXT_TAGGING_BY_EVALUATOR = "./getNextTaggingByEvaluator";
+    public static final String BEAMNG = "beamng";
+    public static final String MNIST = "mnist";
+    
 
 }

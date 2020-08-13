@@ -1,7 +1,11 @@
 package usi.tagger.utilities;
 
 import java.beans.PropertyVetoException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class Utilities {
 
@@ -25,31 +31,24 @@ public class Utilities {
     // practice. Better fail soon the app instead.
     // db
     public static String dbDriver = "com.mysql.jdbc.Driver";
-    public static String dbAddress = "jdbc:mysql://localhost:3306/dl-mutation-tagging";
+    public static String dbAddress = "jdbc:mysql://localhost:3306/dl-mutation-tagging?useSSL=false";
     public static String dbUsername = "root";
-    public static String dbPassword = "";
-    public static int maxNumberOfEvaluators = 2;
-    public static int maxNumberOfEvaluationsPerUser = 120;
+    public static String dbPassword = "123456";
+
+    public static int maxNumberOfEvaluators = 1;
+    public static int maxNumberOfEvaluationsPerUser = 200;
 
     // tagging limits
     public static final Map<String, Integer> limits = new HashMap<String, Integer>();
     static {
-        limits.put("commit-tensorflow", 30);
-        limits.put("commit-torch", 30);
-        limits.put("commit-keras", 30);
-        limits.put("issue-tensorflow", 30);
-        limits.put("issue-torch", 30);
-        limits.put("issue-keras", 30);
-        limits.put("so-tensorflow", 30);
-        limits.put("so-torch", 30);
-        limits.put("so-keras", 30);
+        // limits.put("png", 6);
     }
 
     public static final ArrayList<String> defaultTags = new ArrayList<String>();
     static {
-        defaultTags.add("false positive");
-        defaultTags.add("unclear");
-        defaultTags.add("generic");
+        defaultTags.add("boldness[],smoothness[],continuity[],orientation[]");
+//		defaultTags.add("unclear");
+//		defaultTags.add("generic");
     }
 
     public static double round(double value, int places) {
@@ -92,6 +91,14 @@ public class Utilities {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.US);
         DecimalFormat df2 = new DecimalFormat("#.#", symbols);
         return Double.valueOf(df2.format(val));
+    }
+
+    public static String getContentOfFile(String file) {
+        try {
+            return Files.readAllLines(Paths.get(file)).stream().collect(Collectors.joining());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static int getMaxIdInTable(String tableName) throws IOException, PropertyVetoException {
@@ -163,6 +170,24 @@ public class Utilities {
             }
         }
         return sortedMap;
+    }
+
+    public static void initializeFromFile(String configFile) throws FileNotFoundException, IOException {
+        Properties props = new Properties();
+        try (FileInputStream in = new FileInputStream(configFile)) {
+            props.load(in);
+        }
+        System.out.println("Utilities.initializeFromFile() " + props);
+        Utilities.dbAddress = props.getProperty("dbAddress", Utilities.dbAddress);
+        Utilities.dbDriver = props.getProperty("dbDriver", Utilities.dbDriver);
+        Utilities.dbPassword = props.getProperty("dbPassword", Utilities.dbPassword);
+        Utilities.dbUsername = props.getProperty("dbUsername", Utilities.dbUsername);
+
+        Utilities.maxNumberOfEvaluators = Integer
+                .parseInt(props.getProperty("maxNumberOfEvaluators ", "" + Utilities.maxNumberOfEvaluators));
+        Utilities.maxNumberOfEvaluationsPerUser = Integer.parseInt(
+                props.getProperty("maxNumberOfEvaluationsPerUser ", "" + Utilities.maxNumberOfEvaluationsPerUser));
+
     }
 
 }
