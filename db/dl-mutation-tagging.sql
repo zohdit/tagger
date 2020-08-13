@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `evaluator_id` int(11) unsigned NOT NULL,
   `entity_id` int(11) unsigned NOT NULL,
-  `tag` varchar(100) NOT NULL DEFAULT '',
+  `tag` TEXT NOT NULL DEFAULT '',
   `is_interesting` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`evaluator_id`,`entity_id`),
   KEY `entity_fk` (`entity_id`),
