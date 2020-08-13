@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page import="usi.tagger.utilities.Constants"%>
 <html lang="en">
 <%@page import="usi.tagger.bean.Evaluator"%>
 <%@page import="java.util.*"%>
@@ -96,12 +97,12 @@
 									<td><%=evaluator.getEvaluatedEntities()%></td>
 									<td style="text-align: center"><a
 										class="fa fa-caret-square-o-right detailsIcon"
-										href="../getNextTaggingByEvaluator?dataset=mnist&evaluatorId=<%=evaluator.getId()%>"></a>
+										href="../getNextTaggingByEvaluator?dataset=<%=Constants.MNIST%>&evaluatorId=<%=evaluator.getId()%>"></a>
 									<td style="text-align: center"><a
 										class="fa fa-car detailsIcon"
-										href="../getNextTaggingByEvaluator?dataset=beamng&evaluatorId=<%=evaluator.getId()%>"></a>
-										
-										</td>
+										href="../getNextTaggingByEvaluator?dataset=<%=Constants.BEAMNG%>&evaluatorId=<%=evaluator.getId()%>"></a>
+
+									</td>
 								</tr>
 								<%
 								    }

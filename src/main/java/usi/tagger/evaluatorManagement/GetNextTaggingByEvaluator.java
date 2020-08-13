@@ -27,21 +27,26 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String _dataset = request.getParameter("dataset");
+        final HttpSession session = request.getSession();
 
-        if (Constants.BEAMNG.equalsIgnoreCase(_dataset)) {
-            _dataset = Constants.BEAMNG;
+        String _dataset_from_session = (String) session.getAttribute("dataset");
+        String _dataset_from_request = request.getParameter("dataset");
+
+        if (_dataset_from_session == null && _dataset_from_request == null) {
+            // Default behavior when no dataset is already set
+            session.setAttribute("dataset", Constants.MNIST);
+
+        } else if (_dataset_from_request != null) {
+            // If a dataset is explicitly requested, it gets priority
+            session.setAttribute("dataset", _dataset_from_request);
         } else {
-            _dataset = Constants.MNIST;
+            // Otherwise, we keep what we have in the session
+            session.setAttribute("dataset", _dataset_from_session);
         }
-
-        // Make the compiler happy...
-        final String dataset = _dataset;
 
         // TODO Move to constants
         String gotoPage = Constants.SHOW_ENTITY_TO_TAG_JSP;
         String errorMessage = "";
-        HttpSession session = request.getSession();
 
         try {
             Integer evaluatorId = Integer.valueOf(request.getParameter("evaluatorId"));
@@ -54,7 +59,7 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
 
                 @Override
                 public boolean test(Entity t) {
-                    switch (dataset) {
+                    switch ((String) session.getAttribute("dataset")) {
                     case Constants.BEAMNG:
                         return "json".equalsIgnoreCase(t.getType());
                     case Constants.MNIST:

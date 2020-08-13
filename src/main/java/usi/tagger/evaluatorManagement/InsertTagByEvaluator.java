@@ -23,6 +23,8 @@ public class InsertTagByEvaluator extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Store in the session the dataset
+        // getNextTaggingByEvaluator?dataset=beamng&evaluatorId
         String gotoPage = Constants.GET_NEXT_TAGGING_BY_EVALUATOR;
         String errorMessage = "";
         HttpSession session = request.getSession();
