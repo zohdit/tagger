@@ -16,7 +16,10 @@ public class ImportImagesInTheDb {
     public static void main(String[] args) throws IOException, PropertyVetoException {
 
         // TODO Avoid hardcoded values...
-        File toRead = new File("D:/eclipse-workspace/tagger/dl-mutation-tagger/csvfile.csv");
+        Utilities.initializeFromFile("config.cfg");
+
+        File toRead = new File(args[0]);
+
         ArrayList<Entity> entitiesToAdd = new ArrayList<Entity>();
 
         CSVReader reader = null;
@@ -24,8 +27,9 @@ public class ImportImagesInTheDb {
             reader = new CSVReader(new FileReader(toRead));
             String[] line;
             while ((line = reader.readNext()) != null) {
-                // if(line[0].startsWith("Link"))
-                // continue;
+                if (!line[0].endsWith(".png")) {
+                    continue;
+                }
                 String textToShow = line[0];
                 Entity entity = new Entity();
                 entity.setTextToShow(textToShow);
