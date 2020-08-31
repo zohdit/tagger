@@ -26,7 +26,7 @@ public class ImportBeamNGDataInTheDb {
             reader = new CSVReader(new FileReader(toRead));
             String[] line;
             while ((line = reader.readNext()) != null) {
-                if (!line[0].endsWith(".json")) {
+                if (!line[0].endsWith("interactive_plot.json")) {
                     continue;
                 }
 
