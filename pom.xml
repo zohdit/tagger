@@ -5,13 +5,32 @@
 	<groupId>dl-muatation-tagger</groupId>
 	<artifactId>dl-muatation-tagger</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<!-- <packaging>war</packaging> -->
 
 	<properties>
 		<!-- This is the default configuration file. You can change it by passing 
 			-Dconfig.file=... while invoking mvn -->
 		<config.properties>config.cfg</config.properties>
+		<packaging>${packaging.type}</packaging>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>webapp</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<packaging.type>war</packaging.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>batch</id>
+			<properties>
+				<packaging.type>jar</packaging.type>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<!-- Servlet Spec. Those will be provided by tomcat at runtime -->
@@ -71,6 +90,39 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<!-- Export the project as easy to run script -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<configuration>
+					<programs>
+						<program>
+							<mainClass>usi.tagger.utilities.ImportBeamNGDataInTheDb</mainClass>
+							<id>import-road-data</id>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+			<!-- Preprare the JAR file -->
+			<!-- 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<classifier>classes</classifier>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin> -->
 			<!-- Prepare the WAR file -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -182,7 +234,8 @@
 								<echo>[dbAddress] ${dbAddress}</echo>
 								<echo>[dbUsername] ${dbUsername}</echo>
 								<echo>[maxNumberOfEvaluators] ${maxNumberOfEvaluators}</echo>
-								<echo>[maxNumberOfEvaluationsPerUser] ${maxNumberOfEvaluationsPerUser}</echo>
+								<echo>[maxNumberOfEvaluationsPerUser]
+									${maxNumberOfEvaluationsPerUser}</echo>
 							</tasks>
 						</configuration>
 					</execution>
@@ -216,7 +269,8 @@
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
