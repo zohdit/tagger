@@ -46,7 +46,8 @@ public class Utilities {
 
     public static final ArrayList<String> defaultTags = new ArrayList<String>();
     static {
-        defaultTags.add("boldness[],smoothness[],continuity[],orientation[]");
+        // TODO Do we need manually defined tags here?
+//        defaultTags.add("boldness[],smoothness[],continuity[],orientation[]");
 //		defaultTags.add("unclear");
 //		defaultTags.add("generic");
     }
