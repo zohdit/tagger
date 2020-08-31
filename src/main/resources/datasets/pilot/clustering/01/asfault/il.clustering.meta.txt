@@ -1,0 +1,11 @@
+Number of samples: 1000
+Size: 20
+Distance: il
+Stats on distance: il
+         Mean 148.08843933060422
+         SDev 40.71306527056645
+         Max 285.84856358996035
+         Min 46.072197266983615
+         25th Perc 122.69124251438495
+         75th Perc 169.97470606104758
+
