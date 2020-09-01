@@ -149,7 +149,8 @@ public class DbEntity {
             connection = DbConnection.getInstance().getConnection();
             statement = connection.createStatement();
 
-            String query = "SELECT * FROM " + TABLE_ENTITY;
+            String query = "SELECT * FROM " + TABLE_ENTITY + " as e LEFT JOIN " + TABLE_TAGS + " AS t ON e.id = t.entity_id  GROUP BY id ORDER BY RAND(), COUNT(evaluator_id)"
+; 
 
             resultSet = statement.executeQuery(query);
             if (resultSet.next())

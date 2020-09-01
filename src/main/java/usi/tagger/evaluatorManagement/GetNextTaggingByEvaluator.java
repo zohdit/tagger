@@ -80,7 +80,7 @@ public class GetNextTaggingByEvaluator extends HttpServlet {
             session.setAttribute("existingTags", existingTags);
             session.setAttribute("evaluatorId", evaluatorId);
 
-            Collections.shuffle(entities);
+            // Collections.shuffle(entities);
             // Collections.sort(entities);
 
             boolean found = false;
